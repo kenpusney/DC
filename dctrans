@@ -1,0 +1,83 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+
+$data = YAML.load( File.open('constant.yml').read )
+
+$dc_ins = $data[:instructions]
+
+$dc_reg = $data[:registers]
+
+$dc_unit = $data[:units]
+
+def build_ins(ins,params,context)
+  weightq = $data[:weights];  ## param_count, param_1, param_2, param_3
+  params.each do |e|
+    e[:value]=determine_value(e)
+  end
+  params.unshift({ :type => params.size })
+  return "%08x" % [weightq.zip(params).reduce(ins) { |sum,e|  e[1] ? sum + $dc_unit[ e[1][:type] ]*(1 << e[0]) : sum }]
+end
+
+def determine_value(e)
+  case e[:type]
+    when "@".to_sym
+      e[:value].to_i    ## absolute position
+    when "$".to_sym     
+      nil               ## variable
+    when "&".to_sym
+      e[:value].to_i    ## address
+    else
+      determine_literal(e)    ## literals
+    end
+end
+
+def determine_literal(e)
+  case e[:value]
+    when /^[+-]?(\d+)$/
+      e[:type] = :identi
+      e[:value].to_i
+    else
+      if e[:value] =~ /^(\w+)$/
+        e[:type] = :reg
+        $dc_reg[$1.to_sym]
+      else
+        0
+      end
+  end
+end
+
+def dump_ins(ins)
+  bytes = []
+  (0...4).each do |e|
+    bytes << ins[e*2,2]
+  end
+  p bytes
+  bytes.each do | byte |
+    byte.gsub!('.','f')
+    $out.putc (eval ("0x#{byte}"))
+  end
+end
+
+$in  = ARGF
+$out = File.open("a.out", "wb") 
+$context = {}
+
+$in.each_line do |line| 
+  if line =~ /^\s*(\w+)\s*([^;\n]*);?/   ## <instruction>  [<params>,]*2[<param>]
+    ins = build_ins( 
+      ## instruction
+        $dc_ins[$1.to_sym],
+      ## instruction params
+        params = $2.split(/\s*,\s*/).map { |v| 
+          v.strip =~ /([$\\\#@\%\^&])?(.*)/;
+          {:type => ( $1 ? $1.to_sym : $1 ),:value => $2}
+        },
+      ## execution context
+        $context)
+    dump_ins(ins);
+    params.each do | param |
+      dump_ins( "%08x" % [ param[:value] ] ) if param[:value];
+    end
+  end
+end

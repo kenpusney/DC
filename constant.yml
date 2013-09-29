@@ -1,0 +1,92 @@
+---
+:instructions:
+  :nil  : 0x00
+  ## @Category: Common Ops
+  :move : 0x01
+  :test : 0x02
+  :call : 0x03
+  :ret  : 0x04
+  :term : 0x05
+  :intr : 0x06
+  ## @Category: Arithmetic Ops
+  :add  : 0x11 
+  :sub  : 0x12
+  :mul  : 0x13 
+  :div  : 0x14
+
+  :inc  : 0x15
+  :dec  : 0x16
+  ## @Category: Jump Ops
+  :jmp  : 0x21
+  :cmp  : 0x22
+
+  :jz   : 0x23 
+  :jnz  : 0x24
+  :jc   : 0x25 
+  :jnc  : 0x26
+  ## @Category: Bit Ops
+  :band : 0x31 
+  :bor  : 0x32
+  :bnot : 0x33
+  :bnor : 0x34 
+  :bnand: 0x35
+  :bxor : 0x36
+  ## @Category: Stack Ops
+  :push : 0x41 
+  :pop  : 0x42
+  ## @Category: I/O
+  :in   : 0x51 
+  :out  : 0x52
+:registers:
+  :nil : 0
+  :data0  : 0x00
+  :data1  : 0x01
+  :data2  : 0x02
+  :data3  : 0x03
+  :data4  : 0x04
+  :data5  : 0x05
+  :data6  : 0x06
+  :data7  : 0x07
+  :data8  : 0x08
+  :data9  : 0x09
+  :data10 : 0x10
+  :data11 : 0x11
+  :data12 : 0x12
+  :data13 : 0x13
+  :data14 : 0x14
+  :data15 : 0x15
+
+  :instruction : 0x10
+  :op1  : 0x11
+  :op2  : 0x12
+  :op3  : 0x13
+  :op4  : 0x14
+
+  :total  : 0x20
+
+:units:
+  :nil     : 0x00
+  :identi  : 0x00  
+  :var     : 0x01  
+  :addr    : 0x02
+  :str     : 0x03
+  :reg     : 0x04
+  :relpos  : 0x05  
+  :abspos  : 0x06
+
+  :$ : 0x01
+  :& : 0x02
+  :^ : 0x03
+  :\ : 0x05 
+  :@ : 0x06
+
+  0 : 0 
+  1 : 1 
+  2 : 2 
+  3 : 3 
+  4 : 4
+:weights:
+  - 8
+  - 14
+  - 20
+  - 26

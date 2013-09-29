@@ -1,0 +1,11 @@
+
+## 2013-09-24
+
+  + 加入 intr(中断) 指令，未实现。
+  + 实现 dctrans 功能及 constant.yml 可配置
+  + 实现 dc::dump::Dumper 模块，用来提供可随机访问的存储器接口。
+
+
+## 2013-09-29
+
+  + 实现 Jump Category 系列指令(jmp, jz, jnz, jc, jnc)
