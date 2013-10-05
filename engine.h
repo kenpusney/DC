@@ -17,10 +17,10 @@ namespace dc{
 			public:
 				void execute();
 				TEngine() = default;
-				TEngine(TDumper& dmp):mPool(dmp.base()),mDumpSpace(&dmp),mPC(0){};
+				TEngine(TDumper& dmp):mPool(dmp.base()),mDumpSpace(&dmp),mPC(0),mSP(dmp.size()){};
 			private:
 				TRegisterFrame mRegisters;
-				uint32_t *mPool;	// 64KB(2<<16) is enough for everyone.
+				uint32_t *mPool;	// 512KB(2<<16) is enough for everyone.
 				uint32_t mPC;
 				uint32_t mSP;
 				uint32_t EYE = 1;

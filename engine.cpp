@@ -18,6 +18,7 @@ namespace dc{
 			bool iterminate = false;
 			while(!iterminate){
 				auto cinstr = TI(mPool[mPC]);
+				mPool[mSP] =1;
 				TI params[4]{ cinstr };
 				uint params_info[4]{ param(cinstr) };
 				for( int ppos = 1, pcount = params_info[0]; (ppos <= pcount);++ppos) {
@@ -112,6 +113,12 @@ namespace dc{
 							std::printf("0x%08x(%d)\n", value, value);
 						}
 						break;
+				//@Category: IO Ops:
+					case EI::push:
+						push(params,params_info);
+						break;
+					case EI::pop:
+						pop(params,params_info);
 					default:
 						break;
 				}
@@ -128,8 +135,8 @@ namespace dc{
 				}
 				v[0] = fun(v[1],v[2]);
 				test(v[0]);
-				if( static_cast<EUT>(params_info[3]) == EUT::addr && params[3].code != 0 ){
-					mPool[ params[3].code ] = v[0];
+				if( params_info[3]){
+					locate(params[3],params_info[3]) = v[0];
 				}else{
 					mRegisters[ ER::data1 ] = v[0];
 				}
@@ -163,10 +170,24 @@ namespace dc{
 		}
 
 		void TEngine::push(TI* params, uint* params_info){
-			
+			auto pcount = param( TI(params[0]) );
+			if( pcount = 1 ){
+				uint v[3] {0};
+				for(int pos=1;pos<=3;++pos){
+					v[pos] = locate(params[pos],params_info[pos]);				
+				}
+				mPool[mSP--] = v[1];
+			}
 		}
 		void TEngine::pop(TI* params, uint* params_info){
-			
+			auto pcount = param( TI(params[0]) );
+			if( pcount == 1 ){
+				uint v[3] {0};
+				for(int pos=1;pos<=3;++pos){
+					v[pos] = locate(params[pos],params_info[pos]);				
+				}
+				locate(params[1],params_info[1]) = mPool[++mSP];
+			}
 		}
 		
 		void TEngine::test(uint v){

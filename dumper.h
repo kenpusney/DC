@@ -16,6 +16,7 @@ namespace dc{
 				void load(std::string filename);
 				void move(size_t position);
 				uint32_t* base();
+				size_t size(){return (2<<16);}
 			private:
 				uint32_t* mContent = nullptr;
 				uint32_t* mCurrent = nullptr;
