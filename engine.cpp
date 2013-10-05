@@ -34,6 +34,7 @@ namespace dc{
 						test(mRegisters[ER::data1]);
 						break;
 					case EI::call:
+						call( params, params_info );
 						break;
 					case EI::ret:
 						break;
@@ -107,17 +108,7 @@ namespace dc{
 						if( ! params_info[0] )
 							std::printf("0x%08x(%d)\n", mRegisters[ER::data1], mRegisters[ER::data1]);
 						else{
-							uint value;
-							switch ( static_cast<EUT>(params_info[1])){
-								case EUT::identi:
-									value = params[1].code;
-									break;
-								case EUT::addr:
-									value = mPool[ params[1].code];
-									break;
-								default:
-									value = 0;
-							}
+							uint value = locate(params[1],params_info[1]);
 							std::printf("0x%08x(%d)\n", value, value);
 						}
 						break;
@@ -133,19 +124,7 @@ namespace dc{
 			if( pcount >= 2 ){
 				uint v[3] {0};
 				for(int pos=1;pos<=3;++pos){
-					switch( static_cast<EUT>(params_info[pos]) ){
-						case EUT::identi:
-							v[pos] = params[pos].code;
-							break;
-						case EUT::addr:
-							v[pos] = mPool[ params[pos].code ];
-							break;
-						case EUT::reg:
-							v[pos] = mRegisters [ params[pos].code ];
-							break;
-						default:
-							v[pos] = 1;
-					}
+					v[pos] = locate(params[pos],params_info[pos]);
 				}
 				v[0] = fun(v[1],v[2]);
 				test(v[0]);
@@ -164,7 +143,29 @@ namespace dc{
 			}
 		}
 		
+		void TEngine::call(TI* params, uint* params_info){
+			
+		}
+		
 		void TEngine::move(TI* params, uint* params_info){
+			auto pcount = param( TI(params[0]) );
+			if( pcount == 2 ){
+				uint v[3] {0};
+				for(int pos=1;pos<=3;++pos){
+					v[pos] = locate(params[pos],params_info[pos]);					
+				}
+				if( params_info[2]){
+					locate(params[2],params_info[2]) = v[1];
+				}else{
+					mRegisters[ ER::data1 ] = v[1];
+				}
+			}
+		}
+
+		void TEngine::push(TI* params, uint* params_info){
+			
+		}
+		void TEngine::pop(TI* params, uint* params_info){
 			
 		}
 		
@@ -177,6 +178,19 @@ namespace dc{
 				mRegisters.flags[ code(EFlag::sign) ] = 1;
 			else
 				mRegisters.flags[ code(EFlag::sign) ] = 0;
+		}
+		
+		uint& TEngine::locate(TI& param, uint& info){
+			switch( static_cast<EUT>(info) ){
+				case EUT::identi:
+					return param.code;
+				case EUT::addr:
+					return mPool[ param.code ];
+				case EUT::reg:
+					return mRegisters [ param.code ];
+				default:
+					return this->EYE;
+			}
 		}
 	}
 }
