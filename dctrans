@@ -64,9 +64,9 @@ def dump_ins(ins)
   end
 end
 
-$in  = File.open(ARGV[0],"r")
-p $in
-$out = File.open("a.out", "wb") 
+$in  = File.open(ARGV[0] || "a.dc.asm","r")
+$out = File.open(ARGV[1] || "a.out", "wb") 
+
 $context = {
   :scope => {},
   :count => 0,
@@ -111,4 +111,3 @@ $in.each_line do |line|
     $context[:count] += line.split(';')[0].split(/[\s,]/).select {|tok| tok =~ /^\S+$/}.length
   end
 end
-p $context
