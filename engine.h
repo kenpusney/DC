@@ -17,12 +17,13 @@ namespace dc{
 			public:
 				void execute();
 				TEngine() = default;
-				TEngine(TDumper& dmp):mPool(dmp.base()),mDumpSpace(&dmp),mPC(0),mSP(dmp.size()){};
+				TEngine(TDumper& dmp):mPool(dmp.base()),mDumpSpace(&dmp),mPC(0),mSP(dmp.size()),mFP(dmp.size()/4*3){};
 			private:
 				TRegisterFrame mRegisters;
 				uint32_t *mPool;	// 512KB(2<<16) is enough for everyone.
 				uint32_t mPC;
 				uint32_t mSP;
+				uint32_t mFP;
 				uint32_t EYE = 1;
 				TDumper* mDumpSpace;
 				void calc2(TInstruction* params,uint32_t* params_info, 
@@ -33,7 +34,7 @@ namespace dc{
 				void move(TInstruction* params,uint32_t* params_info);
 				
 				void call(TInstruction* params,uint32_t* params_info);
-				
+				void ret(TInstruction* params,uint32_t* params_info);
 				void push(TInstruction* params,uint32_t* params_info);
 				void pop(TInstruction* params,uint32_t* params_info);
 				

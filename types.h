@@ -75,7 +75,7 @@ namespace dc{
 		};
 		
 		enum class EFlag: uint32_t{
-			nil = 0,	
+			nil = 0,
 			flag = 1,	//0x0001
 			zero,		//0x0002
 			carry,		//0x0003

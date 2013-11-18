@@ -38,6 +38,7 @@ namespace dc{
 						call( params, params_info );
 						break;
 					case EI::ret:
+						ret(params, params_info);
 						break;
 					case EI::term:
 						iterminate = true;
@@ -113,7 +114,7 @@ namespace dc{
 							std::printf("0x%08x(%d)\n", value, value);
 						}
 						break;
-				//@Category: IO Ops:
+				//@Category: Stack Ops:
 					case EI::push:
 						push(params,params_info);
 						break;
@@ -149,11 +150,7 @@ namespace dc{
 				mPC += static_cast<int>(params[1].code);
 			}
 		}
-		
-		void TEngine::call(TI* params, uint* params_info){
-			
-		}
-		
+				
 		void TEngine::move(TI* params, uint* params_info){
 			auto pcount = param( TI(params[0]) );
 			if( pcount == 2 ){
@@ -169,6 +166,17 @@ namespace dc{
 			}
 		}
 
+		void TEngine::call(TI* params, uint* params_info){
+			if(!mPool[mFP+1])
+				mPool[++mFP] = mPC;
+			mPC += static_cast<int>(params[1].code);
+		}
+		
+		void TEngine::ret(TI* params, uint* params_info){
+			if(mPool[mFP])
+				mPC = mPool[mFP--];
+		}
+		
 		void TEngine::push(TI* params, uint* params_info){
 			auto pcount = param( TI(params[0]) );
 			if( pcount = 1 ){
