@@ -11,4 +11,9 @@
   + 实现 Jump Category 系列指令(jmp, jz, jnz, jc, jnc)
   + FIX: 非二进制模式打开文件，dctrans会在写入\x0a( "\n" )的时候
   	同时写入为\x0d\x0a( "\r\n" )
-  + dsaglajsdf
+
+## 2013-11-18
+
+  + 实现 symbol_mark, Jump Category 系列指令可以直接通过相应的 mark
+    来跳转到对应位置
+
