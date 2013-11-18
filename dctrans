@@ -13,16 +13,16 @@ $dc_unit = $data[:units]
 def build_ins(ins,params,context)
   weightq = $data[:weights];  ## param_count, param_1, param_2, param_3
   params.each do |e|
-    e[:value]=determine_value(e)
+    e[:value]=determine_value(e,context)
   end
   params.unshift({ :type => params.size })
   return "%08x" % [weightq.zip(params).reduce(ins) { |sum,e|  e[1] ? sum + $dc_unit[ e[1][:type] ]*(1 << e[0]) : sum }]
 end
 
-def determine_value(e)
+def determine_value(e,context)
   case e[:type]
     when "@".to_sym
-      e[:value].to_i    ## absolute position
+      determine_scope(e,context);
     when "$".to_sym     
       nil               ## variable
     when "&".to_sym
@@ -30,6 +30,11 @@ def determine_value(e)
     else
       determine_literal(e)    ## literals
     end
+end
+
+def determine_scope(e,context)
+  context[:caller][ e[:value].strip.to_sym ] = e[:pos]
+  context[:scope][ e[:value].strip.to_sym ] - e[:pos] -1
 end
 
 def determine_literal(e)
@@ -59,25 +64,51 @@ def dump_ins(ins)
   end
 end
 
-$in  = ARGF
+$in  = File.open(ARGV[0],"r")
+p $in
 $out = File.open("a.out", "wb") 
-$context = {}
+$context = {
+  :scope => {},
+  :count => 0,
+  :caller => {}
+}
 
-$in.each_line do |line| 
-  if line =~ /^\s*(\w+)\s*([^;\n]*);?/   ## <instruction>  [<params>,]*2[<param>]
-    ins = build_ins( 
-      ## instruction
-        $dc_ins[$1.to_sym],
-      ## instruction params
-        params = $2.split(/\s*,\s*/).map { |v| 
-          v.strip =~ /([$\\\#@\%\^&])?(.*)/;
-          {:type => ( $1 ? $1.to_sym : $1 ),:value => $2}
-        },
-      ## execution context
-        $context)
-    dump_ins(ins);
-    params.each do | param |
-      dump_ins( "%08x" % [ param[:value] ] ) if param[:value];
-    end
+$in.each_line do |line|
+  if line =~ /^\s*(\w+)\s*:\s*(;.*)?$/
+    $context[:scope][$1.strip.to_sym] = $context[:count];
+  else
+    $context[:count] += line.split(';')[0].split(/[\s,]/).select {|tok| tok =~ /^\S+$/}.length
   end
 end
+
+$context[:count] = 0
+
+$in.pos = 0
+
+$in.each_line do |line|
+  unless line =~ /^\s*(\w+)\s*:\s*(;.*)?$/
+    if line =~ /^\s*(\w+)\s*([^;\n]*);?/   ## <instruction>  [<params>,]*2[<param>]
+      orig_pos = $context[:count];
+      ins = build_ins( 
+
+        ## instruction
+          $dc_ins[$1.to_sym],
+
+        ## instruction params
+          params = $2.split(/\s*,\s*/).map { |v| 
+            v.strip =~ /([$\\\#@\%\^&])?(.*)/;
+            {:type => ( $1 ? $1.to_sym : $1 ),:value => $2, :pos => (orig_pos+=1) }
+          },
+
+        ## execution context
+          $context)
+
+      dump_ins(ins);
+      params.each do | param |
+        dump_ins( "%08x" % [ param[:value] ] ) if param[:value];
+      end
+    end
+    $context[:count] += line.split(';')[0].split(/[\s,]/).select {|tok| tok =~ /^\S+$/}.length
+  end
+end
+p $context

@@ -1,4 +1,4 @@
-move 10,&1
+move 46,&1
 move 1,&2   ; a
 move 1,&3   ; b
 move 1,&4   ; c
