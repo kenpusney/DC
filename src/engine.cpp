@@ -179,21 +179,13 @@ namespace dc{
 		
 		void TEngine::push(TI* params, uint* params_info){
 			auto pcount = param( TI(params[0]) );
-			if( pcount = 1 ){
-				uint v[3] {0};
-				for(int pos=1;pos<=3;++pos){
-					v[pos] = locate(params[pos],params_info[pos]);				
-				}
-				mPool[mSP--] = v[1];
+			if( pcount == 1 ){
+				mPool[mSP--] = locate(params[1],params_info[1]);
 			}
 		}
 		void TEngine::pop(TI* params, uint* params_info){
 			auto pcount = param( TI(params[0]) );
 			if( pcount == 1 ){
-				uint v[3] {0};
-				for(int pos=1;pos<=3;++pos){
-					v[pos] = locate(params[pos],params_info[pos]);				
-				}
 				locate(params[1],params_info[1]) = mPool[++mSP];
 			}
 		}

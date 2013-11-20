@@ -34,7 +34,7 @@ DumpCore使用C++等编程语言实现，组件化，可配置，并有不错的
 程序。指令集等各个组件可以通过`constant.yml`文件来进行配置。
 
 使用方法：
-    dctrans <asm-file>
+    dctrans <asm-file> [<target-file>]
 
 #### DC::Engine
 
@@ -48,3 +48,5 @@ DumpCore使用C++等编程语言实现，组件化，可配置，并有不错的
 #### DC::InterCom
 
 ### Bits
+  
+  * See doc/instructions.md

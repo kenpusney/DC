@@ -4,14 +4,14 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = main.o core.o engine.o dumper.o
-LINKOBJ  = main.o core.o engine.o dumper.o
+OBJ      = obj/core.o obj/dumper.o obj/engine.o obj/main.o
+LINKOBJ  = obj/core.o obj/dumper.o obj/engine.o obj/main.o
 LIBS     = -L"D:/local/devcpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -m32 -pg -g3
-INCS     = -I"D:/local/devcpp/MinGW64/x86_64-w64-mingw32/include"
-CXXINCS  = -I"D:/local/devcpp/MinGW64/x86_64-w64-mingw32/include"
+INCS     = -I"D:/local/devcpp/MinGW64/x86_64-w64-mingw32/include" -I"include"
+CXXINCS  = -I"D:/local/devcpp/MinGW64/x86_64-w64-mingw32/include" -I"include"
 BIN      = DumpCore.exe
-CXXFLAGS = $(CXXINCS) -m32 -std=c++11 -pg -g3
-CFLAGS   = $(INCS) -m32 -std=c++11 -pg -g3
+CXXFLAGS = $(CXXINCS) -m32 -std=c++11 -Wall -pg -g3
+CFLAGS   = $(INCS) -m32 -std=c++11 -Wall -pg -g3
 RM       = rm -f
 
 .PHONY: all all-before all-after clean clean-custom
@@ -25,14 +25,14 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-main.o: main.cpp
-	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+obj/core.o: src/core.cpp
+	$(CPP) -c src/core.cpp -o obj/core.o $(CXXFLAGS)
 
-core.o: core.cpp
-	$(CPP) -c core.cpp -o core.o $(CXXFLAGS)
+obj/dumper.o: src/dumper.cpp
+	$(CPP) -c src/dumper.cpp -o obj/dumper.o $(CXXFLAGS)
 
-engine.o: engine.cpp
-	$(CPP) -c engine.cpp -o engine.o $(CXXFLAGS)
+obj/engine.o: src/engine.cpp
+	$(CPP) -c src/engine.cpp -o obj/engine.o $(CXXFLAGS)
 
-dumper.o: dumper.cpp
-	$(CPP) -c dumper.cpp -o dumper.o $(CXXFLAGS)
+obj/main.o: src/main.cpp
+	$(CPP) -c src/main.cpp -o obj/main.o $(CXXFLAGS)
