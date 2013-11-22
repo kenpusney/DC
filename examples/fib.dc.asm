@@ -1,29 +1,30 @@
-move 46,&1
-move 1,&2   ; a
-move 1,&3   ; b
-move 1,&4   ; c
+move 46,R1
+move 1,R2   ; a
+move 1,R3   ; b
+move 1,R4   ; c
 
 
 ; if counter == 1 or counter == 2: c = 1
-cmp &1,1
-jz 30
-cmp &1,2
-jz 25
+cmp R1,1
+jz @out1
+cmp R1,2
+jz @out1
 
 ; else:
-sub &1,2,&1
+sub R1,2,R1
 
 
+iterate:
 ; while counter--: c = a + b; a = b; b = c
-add &2,&3,&4
-add &3,0,&2
-add &4,0,&3
-sub &1,1,&1
-jnz -18
+add R2,R3,R4
+add R3,0,R2
+add R4,0,R3
+sub R1,1,R1
+jnz @iterate
 
-
-out &4
+out R4
 term
 
+out1:
 out 1
 term

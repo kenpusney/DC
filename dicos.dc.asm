@@ -1,5 +1,8 @@
-;;
-;;
+;=============
+
+; Directly Interpreted Collective Operating System
+
+;=============
 jmp @start
 
 passf0call:
@@ -15,7 +18,6 @@ ret
 ; DCExit(int)
 DCExit:
 pop
-out 13
 ret
 
 ; task1(void)

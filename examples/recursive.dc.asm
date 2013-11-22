@@ -3,20 +3,20 @@ jmp @start
 
 ;recursive function:
 accumulate:
-pop data1
-pop data2
-cmp data1,0
+pop R1
+pop R2
+cmp R1,0
 jz @_acc_res
 
-add data1,data2,data2
-sub data1,1
+add R1,R2,R2
+sub R1,1
 
-push data2
-push data1
+push R2
+push R1
 call @accumulate
 
 _acc_res:
-push data2
+push R2
 ret
 
 
@@ -27,8 +27,8 @@ push 0
 push 5
 call @accumulate
 
-pop data1
+pop R1
 
-out data1
+out R1
 
 term
