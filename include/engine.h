@@ -24,6 +24,7 @@ namespace dc{
 				uint32_t mPC;
 				uint32_t mSP;
 				uint32_t mFP;
+				uint32_t mFC = 0;
 				uint32_t EYE = 1;
 				TDumper* mDumpSpace;
 				void calc2(TInstruction* params,uint32_t* params_info, 

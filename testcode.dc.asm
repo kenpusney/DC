@@ -17,14 +17,20 @@ _recur_res:
 push data2
 ret
 
+testa:
+out 1
+push 5
+ret
+
 start:
 
 push 0
 push 5
+
+call @testa
+
+push 0
+push 5
 call @recur
-
-pop data1
-
-out data1
 
 term

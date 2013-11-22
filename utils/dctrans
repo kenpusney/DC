@@ -26,13 +26,23 @@ def determine_value(e,context)
     when "$".to_sym     
       nil               ## variable
     when "&".to_sym
-      e[:value].to_i    ## address
+      nil
+    when "\\".to_sym
+      determine_fcall(e,context)
     else
       determine_literal(e)    ## literals
     end
 end
 
 def determine_scope(e,context)
+  if context[:scope][ e[:value].strip.to_sym ]
+    context[:scope][ e[:value].strip.to_sym ] - 1
+  else
+    nil
+  end
+end
+
+def determine_fcall(e,context)
   context[:caller][ e[:value].strip.to_sym ] = e[:pos]
   context[:scope][ e[:value].strip.to_sym ] - e[:pos] -1
 end
@@ -102,7 +112,7 @@ $in.each_line do |line|
 
         ## execution context
           $context)
-
+      p params
       dump_ins(ins);
       params.each do | param |
         dump_ins( "%08x" % [ param[:value] ] ) if param[:value];

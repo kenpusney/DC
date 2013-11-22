@@ -48,12 +48,12 @@ namespace dc{
 		
 		enum class ERegister : uint8_t{
 			nil=0,	//0x00
-			data0 = 0,
-			data1,
+			R0 = 0,
+			R1,
 			result = 0x01,
-			data2,	data3,	data4,	data5,
-			data6,	data7,	data8,	data9,	data10,
-			data11,	data12,	data13,	data14,	data15,	//0x0F
+			R2,	R3,	R4,	R5,
+			R6,	R7,	R8,	R9,	R10,
+			R11, R12, R13, R14, R15,	//0x0F
 			//flag = 0x0F,
 			instruction = 0x10, //0x10
 			op1,

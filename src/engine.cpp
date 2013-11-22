@@ -32,7 +32,7 @@ namespace dc{
 						move( params, params_info );
 						break;
 					case EI::test:
-						test(mRegisters[ER::data1]);
+						test(mRegisters[ER::R1]);
 						break;
 					case EI::call:
 						call( params, params_info );
@@ -108,7 +108,7 @@ namespace dc{
 						break;
 					case EI::out:
 						if( ! params_info[0] )
-							std::printf("0x%08x(%d)\n", mRegisters[ER::data1], mRegisters[ER::data1]);
+							std::printf("0x%08x(%d)\n", mRegisters[ER::R1], mRegisters[ER::R1]);
 						else{
 							uint value = locate(params[1],params_info[1]);
 							std::printf("0x%08x(%d)\n", value, value);
@@ -139,7 +139,7 @@ namespace dc{
 				if( params_info[3]){
 					locate(params[3],params_info[3]) = v[0];
 				}else{
-					mRegisters[ ER::data1 ] = v[0];
+					mRegisters[ ER::R1 ] = v[0];
 				}
 			}
 			return;
@@ -147,7 +147,11 @@ namespace dc{
 		
 		void TEngine::jump(TI* params, uint* params_info, std::function<bool()> condition){
 			if( condition() ){
-				mPC += static_cast<int>(params[1].code);
+				if(static_cast<EUT>(params_info[1]) == EUT::relpos)
+					mPC += static_cast<int>(params[1].code);
+				else{
+					mPC = locate(params[1],params_info[1]);
+				}
 			}
 		}
 				
@@ -161,20 +165,26 @@ namespace dc{
 				if( params_info[2]){
 					locate(params[2],params_info[2]) = v[1];
 				}else{
-					mRegisters[ ER::data1 ] = v[1];
+					mRegisters[ ER::R1 ] = v[1];
 				}
 			}
 		}
 
 		void TEngine::call(TI* params, uint* params_info){
-			if(!mPool[mFP+1])
-				mPool[++mFP] = mPC;
-			mPC += static_cast<int>(params[1].code);
+			mPool[mFP+mFC] = mPC;
+			++mFC;
+			if(static_cast<EUT>(params_info[1]) == EUT::relpos)
+				mPC += static_cast<int>(params[1].code);
+			else{
+				mPC = locate(params[1],params_info[1]);
+			}
 		}
 		
 		void TEngine::ret(TI* params, uint* params_info){
-			if(mPool[mFP])
-				mPC = mPool[mFP--];
+			if(mFC > 0){
+				mPC = mPool[mFP+mFC-1];
+				mFC --;
+			}
 		}
 		
 		void TEngine::push(TI* params, uint* params_info){
@@ -204,6 +214,7 @@ namespace dc{
 		uint& TEngine::locate(TI& param, uint& info){
 			switch( static_cast<EUT>(info) ){
 				case EUT::identi:
+				case EUT::abspos:
 					return param.code;
 				case EUT::addr:
 					return mPool[ param.code ];
@@ -213,5 +224,6 @@ namespace dc{
 					return this->EYE;
 			}
 		}
+		
 	}
 }
