@@ -3,19 +3,17 @@
 ; DicOS -- Directly Interpreted Collective Operating System
 
 ;=============
-jmp @start
+
+jmp @start  ; bootloader
 
 ;----------
 DCInit:
 pop R1  ;task_cnt
 
-move @_DCMemory,R2
-out R2
-
 ret
 
 ;----------
-DCRegtask:
+DCRegTask:
 ret
 
 ;----------
@@ -40,11 +38,24 @@ ret
 
 start:
 
-call @DCInit
-move @_DCMemory,R1
-add R1,1
-out R1
-move $R1
+call @DCDumpMem
+
 term
 
+DCDumpMem:
+move @_DCMemory,R1
+__dcdm_iter:
+
+add R1,1,R1
+out $R1
+cmp R1,@_DCEnd
+jnz @__dcdm_iter
+ret
+
 _DCMemory:
+term
+term
+term
+term
+term
+_DCEnd:
