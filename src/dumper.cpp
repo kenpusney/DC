@@ -37,8 +37,6 @@ namespace dc{
 			try{
 				if(!mContent)
 					mContent = new uint32_t[ 2 << 16 ];
-				else
-					return;
 			}catch(...){
 				this -> release();
 				return;
@@ -47,11 +45,13 @@ namespace dc{
 			std::fstream inf( filename, std::ios::binary | std::ios::in );
 			while( !inf.eof() ){
 				unsigned int ib[4] {0};
-				for(int ibsize = 0; ibsize < 4 && !inf.eof();++ibsize){
+				ib[0] = inf.get();	//jump over 'EOF'
+				for(int ibsize = 1; ibsize < 4 && !inf.eof();++ibsize){
 					ib[ibsize] = inf.get();
 				}
-				//Treat as big-endian
-				*(mCurrent++) = TI(ib[0],ib[1],ib[2],ib[3]).code;
+				if(!inf.eof())
+					//Treat as big-endian
+					*(mCurrent++) = TI(ib[0],ib[1],ib[2],ib[3]).code;
 			}
 			mCurrent = mContent;
 		}

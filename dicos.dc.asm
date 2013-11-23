@@ -1,30 +1,36 @@
 ;=============
 
-; Directly Interpreted Collective Operating System
+; DicOS -- Directly Interpreted Collective Operating System
 
 ;=============
 jmp @start
 
-passf0call:
-pop R1
-call R1
+;----------
+DCInit:
+pop R1  ;task_cnt
+
+move @_DCMemory,R2
+out R2
+
 ret
 
-passf1call:
-pop R1
-call R1
+;----------
+DCRegtask:
 ret
 
-; DCExit(int)
-DCExit:
-pop
+;----------
+DCExit0:
+ret
+
+DCExit1:
+ret
+
+DCExit2:
 ret
 
 ; task1(void)
 task1:
 out 1
-push 2
-call @DCExit
 ret
 
 ; task2(void)
@@ -34,8 +40,12 @@ ret
 
 start:
 
-push @task2
-call @passf0call
-call @task1
-
+call @DCInit
+move @_DCMemory,R1
+add R1,1
+out R1
+out $R1
 term
+
+
+_DCMemory:

@@ -7,22 +7,23 @@
 
 namespace dc{
 	namespace type{
+		
 		enum class EInstruction: uint8_t{
 			nil				= 0x00,
 			//@Category: Common Ops
-				move		= 0x01,
+				move		= 0x01, // [ V ]
 				test		= 0x02,
-				call		= 0x03,
-				ret			= 0x04,
-				term		= 0x05,
+				call		= 0x03, // [ V ]
+				ret			= 0x04, // [ V ]
+				term		= 0x05, // [ V ]
 				intr        = 0x06,
 			
 			//@Category: Arithmetic Ops
-				//basic aritmetic ops
+				//basic aritmetic ops [ V ]
 				add			= 0x11, sub, mul, div,
 				//increase and decrease
 				inc			= 0x15, dec,
-			//@Category: Jump Ops
+			//@Category: Jump Ops [ V ]
 				//No-condition Jump
 				jmp			= 0x21,
 				cmp			= 0x22,
@@ -33,7 +34,7 @@ namespace dc{
 			//@Category: Bit Ops
 				band		= 0x31, bor, bnot, bnor, bnand, bxor, //0x36
 				lshift		= 0x37, rshift,
-			//@Category: Stack Ops
+			//@Category: Stack Ops [ V ]
 				push		= 0x41, pop,
 				
 			//@Category: I/O Ops
@@ -41,6 +42,7 @@ namespace dc{
 			//@Category: String Ops
 		};
 		
+		// strong-typed enums to integers
 		template<typename Enum>
 		inline constexpr uint32_t code(Enum evalue){
 			return static_cast<uint32_t>(evalue);
@@ -63,6 +65,7 @@ namespace dc{
 			total = 0x20
 		};
 		
+		// param unit type
 		enum class EUnitType : uint8_t{
 			nil = 0,		//0x00
 			identi = 0,
@@ -74,6 +77,7 @@ namespace dc{
 			abspos,			//0x06
 		};
 		
+		// flags
 		enum class EFlag: uint32_t{
 			nil = 0,
 			flag = 1,	//0x0001
@@ -87,6 +91,7 @@ namespace dc{
 		
 		struct TRegisterFrame {
 			uint32_t registers[ static_cast<size_t>(ERegister::total) ];
+			// Program State Descriptor
 			std::bitset<code(EFlag::total)> flags;
 			TRegisterFrame()=default;
 			uint32_t& operator[](ERegister reg){ return registers[ static_cast<size_t>(reg) ]; };
@@ -110,11 +115,14 @@ namespace dc{
 			
 			explicit operator EInstruction(){ return static_cast<EInstruction>(this->common.opcode); };
 			
+			// Direct constuction from a 32bit int
 			TInstruction(unsigned int v):code(static_cast<uint32_t>(v)){};
+			// construction from instruction and it's param types
 			TInstruction(EInstruction ins, uint32_t op_count = 0, uint32_t op1=0, uint32_t op2=0, uint32_t op3=0){
 				code = (op3*(1<<26)+op2*(1<<20)+op1*(1<<14)+
 								op_count*(1<<8)+dc::type::code(ins));
 			}
+			// construction from 4 8bit ints
 			TInstruction(unsigned int b1,unsigned int b2,unsigned b3,unsigned b4){
 				code = b1*(1<<24) + b2*(1<<16) + b3*(1<<8) + b4*(1<<0); 
 			}

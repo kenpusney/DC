@@ -10,6 +10,8 @@ namespace dc{
 		using EUT=EUnitType;
 		using uint=uint32_t;
 
+		/// determine an instruction's param length(when pos == 0) 
+		/// & info(when pos == 1 / 2 / 3).
 	    size_t param(TI ins,int pos=0){
 			return  ( ins.common.oprand / (1<<(6*pos)) ) & 0x3f;  
 		}
@@ -18,7 +20,6 @@ namespace dc{
 			bool iterminate = false;
 			while(!iterminate){
 				auto cinstr = TI(mPool[mPC]);
-				mPool[mSP] =1;
 				TI params[4]{ cinstr };
 				uint params_info[4]{ param(cinstr) };
 				for( int ppos = 1, pcount = params_info[0]; (ppos <= pcount);++ppos) {
@@ -213,13 +214,17 @@ namespace dc{
 		
 		uint& TEngine::locate(TI& param, uint& info){
 			switch( static_cast<EUT>(info) ){
-				case EUT::identi:
-				case EUT::abspos:
+				case EUT::identi:	// an identified number (e.g. 123)
+				case EUT::abspos:	// a symbol position (e.g. @fun)
 					return param.code;
-				case EUT::addr:
+				//case EUT::relpos:	// a relative address given by symbol or number(e.g \02 \05)
+				//	return 	mPC+=static_cast<int>(param.code);
+				case EUT::addr:		// an address given by symbol or number (e.g. &fun &123)
 					return mPool[ param.code ];
-				case EUT::reg:
+				case EUT::reg:		// a register name  (e.g. R1)
 					return mRegisters [ param.code ];
+				case EUT::var:		// a var location using registers (e.g. $R1)
+					return mPool[ mRegisters[ param.code] ];
 				default:
 					return this->EYE;
 			}

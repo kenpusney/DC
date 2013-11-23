@@ -24,14 +24,22 @@ def determine_value(e,context)
     when "@".to_sym
       determine_scope(e,context);
     when "$".to_sym     
-      nil               ## variable
+      determine_var(e,context);
     when "&".to_sym
-      nil
+      determine_scope(e,context);
     when "\\".to_sym
       determine_fcall(e,context)
     else
       determine_literal(e)    ## literals
     end
+end
+
+def determine_var(e,context)
+  if $dc_reg[ e[:value].strip.to_sym ]
+    $dc_reg[ e[:value].strip.to_sym ]
+  else
+    nil
+  end
 end
 
 def determine_scope(e,context)
@@ -98,6 +106,7 @@ $in.pos = 0
 $in.each_line do |line|
   unless line =~ /^\s*(\w+)\s*:\s*(;.*)?$/
     if line =~ /^\s*(\w+)\s*([^;\n]*);?/   ## <instruction>  [<params>,]*2[<param>]
+      puts line
       orig_pos = $context[:count];
       ins = build_ins( 
 
@@ -112,7 +121,6 @@ $in.each_line do |line|
 
         ## execution context
           $context)
-      p params
       dump_ins(ins);
       params.each do | param |
         dump_ins( "%08x" % [ param[:value] ] ) if param[:value];

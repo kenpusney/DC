@@ -1,6 +1,6 @@
 
-#ifndef __EXECUTOR_H__
-#define __EXECUTOR_H__
+#ifndef __ENGINE_H__
+#define __ENGINE_H__
 
 #include "core.h"
 #include "dumper.h"
@@ -17,16 +17,23 @@ namespace dc{
 			public:
 				void execute();
 				TEngine() = default;
-				TEngine(TDumper& dmp):mPool(dmp.base()),mPC(0),mSP(dmp.size()),mFP(dmp.size()/4*3),mDumpSpace(&dmp){};
+				TEngine(TDumper& dmp):
+					mPool(dmp.base()),
+					mPC(0),
+					mSP(dmp.size()),
+					mFP(dmp.size()/4*3),
+					mDumper(&dmp){};
 			private:
 				TRegisterFrame mRegisters;
 				uint32_t *mPool;	// 512KB(2<<16) is enough for everyone.
-				uint32_t mPC;
-				uint32_t mSP;
-				uint32_t mFP;
-				uint32_t mFC = 0;
-				uint32_t EYE = 1;
-				TDumper* mDumpSpace;
+				uint32_t mPC;		// Program Counter
+				uint32_t mSP;		// Stack Pointer
+				const uint32_t mFP;		// Function Pointer
+				uint32_t mFC = 0;	// Function Counter
+				uint32_t EYE = 1;	// IDENTIFICATION NUMBER
+				TDumper* mDumper;
+				
+				// Binary calculation
 				void calc2(TInstruction* params,uint32_t* params_info, 
 						std::function<uint32_t(uint32_t,uint32_t)> fun);
 				void test(uint32_t value);
@@ -39,6 +46,7 @@ namespace dc{
 				void push(TInstruction* params,uint32_t* params_info);
 				void pop(TInstruction* params,uint32_t* params_info);
 				
+				// Locations
 				uint32_t& locate(TInstruction& param,uint32_t& info);
 		};
 	}

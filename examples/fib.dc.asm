@@ -13,12 +13,11 @@ jz @out1
 ; else:
 sub R1,2,R1
 
-
 iterate:
 ; while counter--: c = a + b; a = b; b = c
 add R2,R3,R4
-add R3,0,R2
-add R4,0,R3
+move R3,R2
+move R4,R3
 sub R1,1,R1
 jnz @iterate
 
