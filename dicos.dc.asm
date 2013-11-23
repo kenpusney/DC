@@ -44,8 +44,7 @@ call @DCInit
 move @_DCMemory,R1
 add R1,1
 out R1
-out $R1
+move $R1
 term
-
 
 _DCMemory:
