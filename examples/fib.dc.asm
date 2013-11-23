@@ -11,14 +11,14 @@ cmp R1,2
 jz @out1
 
 ; else:
-sub R1,2,R1
+sub R1,2
 
 iterate:
 ; while counter--: c = a + b; a = b; b = c
 add R2,R3,R4
 move R3,R2
 move R4,R3
-sub R1,1,R1
+sub R1,1
 jnz @iterate
 
 out R4

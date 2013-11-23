@@ -130,6 +130,7 @@ namespace dc{
 		
 		void TEngine::calc2(TI* params,uint* params_info, std::function<uint(uint,uint)> fun){
 			auto pcount = param( TI(params[0]) );
+			auto ploc = static_cast<EUT>(params_info[1]);
 			if( pcount >= 2 ){
 				uint v[3] {0};
 				for(int pos=1;pos<=3;++pos){
@@ -137,10 +138,15 @@ namespace dc{
 				}
 				v[0] = fun(v[1],v[2]);
 				test(v[0]);
+				// Where to put result?
 				if( params_info[3]){
 					locate(params[3],params_info[3]) = v[0];
-				}else{
+				}else if(ploc == EUT::identi || 
+						 ploc == EUT::abspos ||
+						 ploc == EUT::relpos){
 					mRegisters[ ER::R1 ] = v[0];
+				}else{
+					locate(params[1],params_info[1]) = v[0];
 				}
 			}
 			return;
@@ -207,9 +213,9 @@ namespace dc{
 			else
 				mRegisters.flags[ code(EFlag::zero) ] = 0;
 			if ( int(v) < 0)
-				mRegisters.flags[ code(EFlag::sign) ] = 1;
+				mRegisters.flags[ code(EFlag::carry) ] = 1;
 			else
-				mRegisters.flags[ code(EFlag::sign) ] = 0;
+				mRegisters.flags[ code(EFlag::carry) ] = 0;
 		}
 		
 		uint& TEngine::locate(TI& param, uint& info){
