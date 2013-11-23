@@ -1,9 +1,0 @@
-
-let rec acc($m,$n):{
-  if ($n == 0) then $m else acc($m+$n, $n-1)
-}
-
-start:
-  let a = acc(0,5)
-  print(a)
-  exit
