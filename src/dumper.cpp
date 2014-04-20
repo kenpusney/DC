@@ -1,71 +1,73 @@
 #include "dumper.h"
+#include "types.h"
 #include <fstream>
 
 
 using TI = dc::type::TInstruction;
-namespace dc{
-	namespace dump{
-		TDumper::~TDumper(){
-			this -> release();
-		}
+namespace dc {
+    namespace dump {
 
-		uint32_t* TDumper::base(){
-			return mContent;
-		}
+        BCDumper::~BCDumper() {
+            this -> release();
+        }
 
-		uint32_t TDumper::fetch(){
-			return *mCurrent;
-		}
+        uint32_t* BCDumper::base() {
+            return mContent;
+        }
 
-		uint32_t TDumper::next(){
-			return *(++mCurrent);
-		}
+        uint32_t BCDumper::fetch() {
+            return *mCurrent;
+        }
 
-		uint32_t TDumper::select(size_t pos){
-			return mContent[pos];
-		}
-		
-		uint32_t* TDumper::seek(size_t pos){
-			return mContent+pos;
-		}
+        uint32_t BCDumper::next() {
+            return *(++mCurrent);
+        }
 
-		void TDumper::move(size_t position){
-			mCurrent = mContent+position;
-		}
-		
-		void TDumper::load(std::string filename){
-			try{
-				if(!mContent)
-					mContent = new uint32_t[ 2 << 16 ];
-			}catch(...){
-				this -> release();
-				return;
-			}
-			mCurrent = mContent;
-			std::fstream inf( filename, std::ios::binary | std::ios::in );
-			while( !inf.eof() ){
-				unsigned int ib[4] {0};
-				ib[0] = inf.get();	//jump over 'EOF'
-				for(int ibsize = 1; ibsize < 4 && !inf.eof();++ibsize){
-					ib[ibsize] = inf.get();
-				}
-				if(!inf.eof())
-					//Treat as big-endian
-					*(mCurrent++) = TI(ib[0],ib[1],ib[2],ib[3]).code;
-			}
-			mCurrent = mContent;
-		}
-		
-		void TDumper::release(){
-			if ( mContent != nullptr )
-				return;
-			try{
-				delete [] mContent;
-				mContent = nullptr;
-			}catch(...){
-				mContent = nullptr;
-				return;
-			}
-		}
-	}
+        uint32_t BCDumper::select(size_t pos) {
+            return mContent[pos];
+        }
+
+        uint32_t* BCDumper::seek(size_t pos) {
+            return mContent + pos;
+        }
+
+        void BCDumper::move(size_t position) {
+            mCurrent = mContent + position;
+        }
+
+        void BCDumper::load(std::string filename) {
+            try {
+                if (!mContent)
+                    mContent = new uint32_t[ 2 << 16 ];
+            } catch (...) {
+                this -> release();
+                return;
+            }
+            mCurrent = mContent;
+            std::fstream inf(filename, std::ios::binary | std::ios::in);
+            while (!inf.eof()) {
+                unsigned int ib[4]{0};
+                ib[0] = inf.get(); //jump over 'EOF'
+                for (int ibsize = 1; ibsize < 4 && !inf.eof(); ++ibsize) {
+                    ib[ibsize] = inf.get();
+                }
+                if (!inf.eof())
+                    //Treat as big-endian
+                    *(mCurrent++) = TI(ib[0], ib[1], ib[2], ib[3]).value;
+            }
+            mCurrent = mContent;
+        }
+
+        void BCDumper::release() {
+            if (mContent != nullptr)
+                return;
+            try {
+                delete [] mContent;
+                mContent = nullptr;
+            } catch (...) {
+                mContent = nullptr;
+                return;
+            }
+        }
+    }
 }

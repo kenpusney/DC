@@ -1,4 +1,6 @@
 *.o
 *.exe
+DumpCore
 *.out
 obj
+nbproject/private

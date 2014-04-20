@@ -1,15 +1,14 @@
 # Project: DumpCore
 # Makefile created by Dev-C++ 5.4.2
 
-CPP      = g++.exe -D__DEBUG__
-CC       = gcc.exe -D__DEBUG__
-WINDRES  = windres.exe
-OBJ      = obj/core.o obj/dumper.o obj/engine.o obj/main.o
-LINKOBJ  = obj/core.o obj/dumper.o obj/engine.o obj/main.o
-LIBS     = -L"D:/local/devcpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -m32 -pg -g3
-INCS     = -I"D:/local/devcpp/MinGW64/x86_64-w64-mingw32/include" -I"include"
-CXXINCS  = -I"D:/local/devcpp/MinGW64/x86_64-w64-mingw32/include" -I"include"
-BIN      = DumpCore.exe
+CPP      = g++ -D__DEBUG__
+CC       = gcc -D__DEBUG__
+OBJ      = obj/dumper.o obj/engine.o obj/main.o
+LINKOBJ  = obj/dumper.o obj/engine.o obj/main.o
+LIBS     = -static-libgcc -m32 -pg -g3
+INCS     = -I"include"
+CXXINCS  = -I"include"
+BIN      = DumpCore
 CXXFLAGS = $(CXXINCS) -m32 -std=c++11 -Wall -pg -g3
 CFLAGS   = $(INCS) -m32 -std=c++11 -Wall -pg -g3
 RM       = rm -f
@@ -24,9 +23,6 @@ clean: clean-custom
 
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
-
-obj/core.o: src/core.cpp
-	$(CPP) -c src/core.cpp -o obj/core.o $(CXXFLAGS)
 
 obj/dumper.o: src/dumper.cpp
 	$(CPP) -c src/dumper.cpp -o obj/dumper.o $(CXXFLAGS)
