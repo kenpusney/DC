@@ -75,7 +75,6 @@ def dump_ins(ins)
   (0...4).each do |e|
     bytes << ins[e*2,2]
   end
-  p bytes
   bytes.each do | byte |
     byte.gsub!('.','f')
     $out.putc (eval ("0x#{byte}"))
@@ -106,7 +105,6 @@ $in.pos = 0
 $in.each_line do |line|
   unless line =~ /^\s*(\w+)\s*:\s*(;.*)?$/
     if line =~ /^\s*(\w+)\s*([^;\n]*);?/   ## <instruction>  [<params>,]*2[<param>]
-      puts line
       orig_pos = $context[:count];
       ins = build_ins( 
 

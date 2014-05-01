@@ -4,3 +4,5 @@ DumpCore
 *.out
 obj
 nbproject/private
+nbproject
+gmon.out
