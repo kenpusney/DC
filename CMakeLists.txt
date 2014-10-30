@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8.4)
+project(DumpCore)
+include_directories(include)
+set(SOURCE_FILES src/dumper.cpp src/engine.cpp src/main.cpp)
+add_executable(DumpCore ${SOURCE_FILES})
+add_definitions(-std=c++11)

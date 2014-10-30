@@ -1,12 +1,11 @@
-#include "dumper.h"
-#include "types.h"
+#include "Dumper.hpp"
+#include "Types.hpp"
 #include <fstream>
 
 
-using TI = dc::type::TInstruction;
 namespace dc {
     namespace dump {
-
+        using dc::type::TInstruction;
         BCDumper::~BCDumper() {
             this -> release();
         }
@@ -53,7 +52,7 @@ namespace dc {
                 }
                 if (!inf.eof())
                     //Treat as big-endian
-                    *(mCurrent++) = TI(ib[0], ib[1], ib[2], ib[3]).value;
+                    *(mCurrent++) = TInstruction(ib[0], ib[1], ib[2], ib[3]).value;
             }
             mCurrent = mContent;
         }
