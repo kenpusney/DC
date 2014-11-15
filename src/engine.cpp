@@ -47,7 +47,7 @@ namespace dc {
                     case EInstruction::ret:
                         ret(params, params_info);
                         break;
-                    case EInstruction::term:
+                    case EInstruction::halt:
                         terminated = true;
                         break;
                         //@Category: Arithmetic Ops:

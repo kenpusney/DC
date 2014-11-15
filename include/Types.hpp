@@ -14,7 +14,7 @@ namespace dc {
             test = 0x02,
             call = 0x03, // [ V ]
             ret  = 0x04, // [ V ]
-            term = 0x05, // [ V ]
+            halt = 0x05, // [ V ]
             intr = 0x06,
 
             //@Category: Arithmetic Ops
@@ -39,6 +39,29 @@ namespace dc {
             //@Category: I/O Ops
             in = 0x51, out,
             //@Category: String Ops
+
+            //@Category: PLVM extensions
+            // block definition
+            func = 0x60,
+            module,
+            type,
+            invoke,
+            end,
+            bind,
+            block,
+
+            // byte-code manipulation
+            dynload,
+
+            // execution environment
+            yield,
+            fork,
+            wait,
+
+            mutex,
+            lock,
+            unlock,
+
         };
 
         // strong-typed enums to integers
